@@ -70,6 +70,11 @@
         </v-sheet>
         <v-card-text class="pa-8">
           <div class="text-center mb-6">
+            <v-avatar size="100" rounded="lg" color="grey-lighten-4" class="mb-4">
+              <v-img :src="selectedItemForCart?.image">
+                <template v-slot:placeholder><v-icon color="grey">mdi-image-off</v-icon></template>
+              </v-img>
+            </v-avatar>
             <div class="text-h5 font-weight-black text-primary">{{ selectedItemForCart?.name }}</div>
             <v-chip size="small" variant="tonal" color="grey" class="mt-1 font-weight-bold">ID: {{ selectedItemForCart?.pid }}</v-chip>
           </div>
@@ -91,6 +96,9 @@
         </v-sheet>
         <v-card-text class="pa-8">
           <v-row>
+            <v-col cols="12">
+              <v-text-field v-model="editedItem.image" label="Image URL" variant="outlined" density="comfortable" color="indigo" placeholder="Paste link here (e.g. https://...)" prepend-inner-icon="mdi-image-search"></v-text-field>
+            </v-col>
             <v-col cols="12"><v-text-field v-model="editedItem.name" label="Product Name" variant="outlined" density="comfortable" color="indigo" hide-details class="mb-4"></v-text-field></v-col>
             <v-col cols="12"><v-text-field v-model="editedItem.description" label="Description" variant="outlined" density="comfortable" color="indigo" hide-details class="mb-4"></v-text-field></v-col>
             <v-col cols="6"><v-text-field v-model.number="editedItem.price" label="Price" type="number" variant="outlined" prefix="₱" density="comfortable" color="indigo"></v-text-field></v-col>
@@ -108,7 +116,7 @@
             size="large" 
             @click="saveItem" 
             class="px-10 confirm-btn text-none"
-            :disabled="!editedItem.name || !editedItem.description || editedItem.price <= 0"
+            :disabled="!editedItem.name || !editedItem.image || editedItem.price <= 0"
           >
             Save Product
           </v-btn>
@@ -126,8 +134,13 @@
           <div v-if="cart.length === 0" class="text-center py-8 text-grey">Your cart is empty</div>
           <v-list v-else lines="two" bg-color="transparent">
             <v-list-item v-for="(item, i) in cart" :key="i" class="px-0">
-              <template v-slot:prepend><v-avatar color="indigo-lighten-5" rounded="lg"><span class="text-indigo font-weight-bold">{{ item.qty }}</span></v-avatar></template>
+              <template v-slot:prepend>
+                <v-avatar size="50" rounded="lg" class="mr-3">
+                  <v-img :src="item.image"></v-img>
+                </v-avatar>
+              </template>
               <v-list-item-title class="font-weight-bold text-body-1">{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ item.qty }} pcs x ₱{{ item.price }}</v-list-item-subtitle>
               <template v-slot:append><div class="text-body-1 font-weight-black text-indigo">₱{{ item.subtotal }}</div></template>
             </v-list-item>
           </v-list>
@@ -162,7 +175,8 @@ export default {
     dialog: false, receiptDialog: false, qtyDialog: false,
     selectedItemForCart: null, selectedQty: 1, editedIndex: -1,
     allItems: [], cart: [],
-    editedItem: { pid: '', name: '', description: '', price: 0, stock: 0, category: 'Vegetables' }
+    // Added image property
+    editedItem: { pid: '', name: '', description: '', price: 0, stock: 0, category: 'Vegetables', image: '' }
   }),
   computed: {
     filteredItems() { return this.allItems.filter(i => i.category === this.selectedCategory); },
@@ -189,8 +203,8 @@ export default {
       if (data) this.allItems = JSON.parse(data);
       else {
         this.allItems = [
-          { name: 'Carrots', description: 'Fresh and organic', price: 50, stock: 20, category: 'Vegetables' },
-          { name: 'Apple', description: 'Imported Fuji', price: 25, stock: 50, category: 'Fruits' }
+          { name: 'Carrots', description: 'Fresh', price: 50, stock: 20, category: 'Vegetables', image: 'https://cdn-icons-png.flaticon.com/512/2347/2347061.png' },
+          { name: 'Apple', description: 'Fuji', price: 25, stock: 50, category: 'Fruits', image: 'https://cdn-icons-png.flaticon.com/512/415/415733.png' }
         ];
         this.updateProductIDs();
       }
@@ -198,16 +212,13 @@ export default {
     saveInventory() { localStorage.setItem('inventory_db', JSON.stringify(this.allItems)); },
     openDialog(item) {
       this.editedIndex = item ? this.allItems.indexOf(item) : -1;
-      this.editedItem = item ? Object.assign({}, item) : { name: '', description: '', price: 0, stock: 0, category: this.selectedCategory };
+      this.editedItem = item ? Object.assign({}, item) : { name: '', description: '', price: 0, stock: 0, category: this.selectedCategory, image: '' };
       this.dialog = true;
     },
     saveItem() {
-      // Final logic-level safety check
-      if (!this.editedItem.name || this.editedItem.price <= 0) return;
-      
+      if (!this.editedItem.name || !this.editedItem.image || this.editedItem.price <= 0) return;
       if (this.editedIndex > -1) Object.assign(this.allItems[this.editedIndex], this.editedItem);
       else this.allItems.push({ ...this.editedItem });
-      
       this.updateProductIDs();
       this.dialog = false;
     },
@@ -239,7 +250,6 @@ export default {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
 .modern-font { font-family: 'Inter', sans-serif !important; -webkit-font-smoothing: antialiased; }
 .app-title { font-weight: 800; letter-spacing: -1.2px; font-size: 1.8rem; line-height: 1; }
 .tracking-widest { letter-spacing: 2px !important; font-weight: 600; font-size: 0.65rem; }
@@ -247,11 +257,8 @@ export default {
 .action-btn { text-transform: none !important; font-weight: 600; border-radius: 6px; }
 .actions-row { margin-top: 2px !important; margin-bottom: 8px !important; }
 .floating-logout { position: fixed; bottom: 25px; right: 25px; border-radius: 10px; text-transform: none !important; font-weight: 600; }
-
 .modern-dialog-card { overflow: hidden; }
 .qty-input-text :deep(input) { font-size: 1.5rem !important; font-weight: 700 !important; text-align: center; color: #3f51b5; }
 .confirm-btn { border-radius: 12px !important; font-weight: 700 !important; letter-spacing: 0.5px; }
-
-/* Dark mode overrides for dialogs */
 .v-theme--dark .modern-dialog-card { background-color: #1e1e2f !important; }
 </style>

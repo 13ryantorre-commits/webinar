@@ -28,6 +28,7 @@
       <v-table hover class="custom-table">
         <thead class="bg-grey-lighten-4">
           <tr>
+            <th class="text-center text-overline font-weight-bold py-5">Image</th>
             <th class="text-overline font-weight-bold py-5 px-6">Product ID</th>
             <th class="text-overline font-weight-bold py-5">Name</th>
             <th class="text-overline font-weight-bold py-5">Description</th>
@@ -38,6 +39,15 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
+            <td class="text-center py-2">
+              <v-avatar size="65" rounded="lg" color="grey-lighten-4">
+                <v-img :src="item.image" cover>
+                  <template v-slot:placeholder>
+                    <v-icon color="grey-lighten-2">mdi-image-off</v-icon>
+                  </template>
+                </v-img>
+              </v-avatar>
+            </td>
             <td class="font-weight-bold text-primary py-6 px-6">{{ item.pid }}</td>
             <td class="font-weight-medium py-6 text-body-1">{{ item.name }}</td>
             <td class="text-grey-darken-1 text-body-2 py-6">{{ item.description }}</td>
@@ -80,26 +90,9 @@ export default {
 </script>
 
 <style scoped>
-.custom-table-container {
-  width: 98vw !important;
-  max-width: none !important;
-  margin: 0 auto;
-}
-
-.custom-tabs {
-  border-bottom: 2px solid #f5f5f5;
-}
-
-.custom-table :deep(td) {
-  height: 80px !important; /* Nilakihan natin ang row height para mas maluwag */
-}
-
-.v-table :deep(tr:not(:last-child) td) {
-  border-bottom: 1px solid #eeeeee !important;
-}
-
-/* Hover row effect */
-.custom-table :deep(tr:hover) {
-  background-color: #fbfbfb !important;
-}
+.custom-table-container { width: 98vw !important; max-width: none !important; margin: 0 auto; }
+.custom-tabs { border-bottom: 2px solid #f5f5f5; }
+.custom-table :deep(td) { height: 95px !important; }
+.v-table :deep(tr:not(:last-child) td) { border-bottom: 1px solid #eeeeee !important; }
+.custom-table :deep(tr:hover) { background-color: #fbfbfb !important; }
 </style>

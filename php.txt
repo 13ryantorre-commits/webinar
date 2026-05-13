@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <?php
+
+    $full_paragraph = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+    $start = "Ut enim ad minim veniam";
+    $end = "ex ea commodo consequat.";
+
+   
+    $start_index = strpos($full_paragraph, $start);
+    $end_index = strpos($full_paragraph, $end) + strlen($end);
+    $length = $end_index - $start_index;
+
+    $specific_call = substr($full_paragraph, $start_index, $length);
+ 
+    echo "<h1>Welcome to My Inventory System</h1>";
+    
+    echo "<p>" . $specific_call . "</p>";
+    ?>
+
+
+
+    <?php
+    
+    $FullName = "Baba Cops"; 
+
+    // 2. Gagamit tayo ng explode() para hatiin ang pangalan base sa "space"
+    // Gagawin nitong array ang pangalan: ["Temple", "Joy"]
+    $name_parts = explode(" ", $FullName);
+
+    // 3. Gagamit tayo ng end() para makuha ang pinakahuling item sa array (ang Last Name)
+    $LastName = end($name_parts);
+
+    echo "<h1>Welcome to My Inventory System</h1>";
+    
+    // I-display natin ang Last Name sa baba
+    echo "<p>User: <b>" . $LastName . "</b></p>";
+
+    ?>
+
+    <?php
+
+    $fullname = "Hello Hi";
+
+    $selectname = explode(" " , $fullname);
+
+    $lastname = end($selectname);
+
+    echo "<h1> Hello Guys </h1>";
+    echo "<p> Lastname:  " . $lastname . "</p>";
+
+    ?>
+    
+</body>
+</html>

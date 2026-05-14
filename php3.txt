@@ -1,0 +1,57 @@
+<?php
+// 1. Multidimensional Array ng mga Produkto
+$inventory = [
+    ["name" => "Keyboard", "price" => 1500, "stock" => 10],
+    ["name" => "Mouse", "price" => 800, "stock" => 0], // Dapat itong malaktawan (continue)
+    ["name" => "Monitor", "price" => 5000, "stock" => 5],
+    ["name" => "USB Cable", "price" => 200, "stock" => 15],
+    ["name" => "Headset", "price" => 1200, "stock" => 8],
+];
+
+// 2. Function para sa pag-calculate ng Total
+function calculateTotal($price, $qty) {
+    return $price * $qty;
+}
+
+echo "<h2>Product Inventory & Sales Summary</h2>";
+echo "<table border='1' cellpadding='10'>";
+echo "<tr><th>Product</th><th>Price</th><th>Stock Status</th><th>Subtotal (if 2 pcs)</th></tr>";
+
+// 3. Paggamit ng Foreach Loop
+foreach ($inventory as $item) {
+    
+    // Gamitin ang 'continue' kung walang stock
+    if ($item['stock'] == 0) {
+        continue; 
+    }
+
+    $subtotal = calculateTotal($item['price'], 2); // Sample order of 2 units
+
+    echo "<tr>";
+    echo "<td>" . $item['name'] . "</td>";
+    echo "<td>₱" . number_format($item['price'], 2) . "</td>";
+    echo "<td>" . $item['stock'] . " items left</td>";
+    echo "<td>₱" . number_format($subtotal, 2) . "</td>";
+    echo "</tr>";
+}
+echo "</table>";
+
+// 4. Activity: Array Sorting at Adding
+echo "<h3>System Updates:</h3>";
+array_push($inventory, ["name" => "Webcam", "price" => 2500, "stock" => 3]); // Magdagdag ng item
+asort($inventory); // I-sort ang array
+
+echo "Bagong item naidagdag sa system.";
+
+// 5. Bonus: Loop with Break
+echo "<h3>Discount Coupons Generated:</h3>";
+$count = 1;
+while ($count <= 10) {
+    if ($count > 5) {
+        echo "Limit reached. ";
+        break; // Titigil ang loop pag lampas ng 5
+    }
+    echo "CODE-2026-00" . $count . "<br>";
+    $count++;
+}
+?>

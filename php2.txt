@@ -1,0 +1,57 @@
+<?php
+// 1. Multidimensional Array ng mga Estudyante at Grades
+$students = [
+    "Juan" => [
+        "Math" => 85,
+        "Science" => 90,
+        "English" => 78
+    ],
+    "Maria" => [
+        "Math" => 72,
+        "Science" => 74,
+        "English" => 70
+    ],
+    "Pedro" => [
+        "Math" => 95,
+        "Science" => 92,
+        "English" => 88
+    ]
+];
+
+// 2. Array Manipulation
+$students["Juan"]["Filipino"] = 88; // Pagdagdag ng subject (Add)
+$students["Maria"]["Math"] = 75;    // Pag-update ng grade (Update)
+unset($students["Pedro"]);          // Pag-remove ng student (Remove)
+
+// 3. Function para sa Remarks
+function checkRemarks($average) {
+    return ($average >= 75) ? "<b style='color:green'>PASSED</b>" : "<b style='color:red'>FAILED</b>";
+}
+
+echo "<h2>Class Record Summary</h2>";
+
+// 4. Nested Foreach Loop
+foreach ($students as $name => $subjects) {
+    echo "<h3>Student Name: $name</h3>";
+    echo "<ul>";
+    
+    $totalGrades = 0;
+    $subjectCount = count($subjects);
+
+    foreach ($subjects as $subject => $grade) {
+        echo "<li>$subject: $grade</li>";
+        $totalGrades += $grade;
+    }
+
+    // Pagkuha ng Average
+    $average = $totalGrades / $subjectCount;
+    
+    echo "</ul>";
+    echo "<strong>Average:</strong> " . number_format($average, 2) . "<br>";
+    echo "<strong>Status:</strong> " . checkRemarks($average) . "<br>";
+    echo "<hr>";
+}
+
+// 5. Bonus: Sorting the Students by Name
+ksort($students); // I-sort ang mga keys (pangalan) alphabetically
+?>

@@ -1,0 +1,61 @@
+<?php
+// 1. Initial Cart (Indexed Array of Associative Arrays)
+$shopping_cart = [
+    ["name" => "Smartphone", "price" => 15000, "cat" => "Electronics"],
+    ["name" => "Cigarettes", "price" => 200, "cat" => "Prohibited"], // Bawal ito
+    ["name" => "T-Shirt", "price" => 500, "cat" => "Apparel"],
+    ["name" => "Laptop", "price" => 45000, "cat" => "Electronics"],
+    ["name" => "Toy Car", "price" => 150, "cat" => "Toys"]
+];
+
+$prohibited_categories = ["Prohibited", "Illegal"];
+
+// 2. Tax Function
+function applyTax($amount) {
+    return $amount * 1.12; // 12% VAT
+}
+
+echo "<h2>Customer Invoice</h2>";
+echo "<ul>";
+
+$grand_total = 0;
+
+// 3. Looping through the Cart
+foreach ($shopping_cart as $item) {
+    
+    // Check for prohibited items
+    if (in_array($item['cat'], $prohibited_categories)) {
+        echo "<li style='color:red;'>Skipped: " . $item['name'] . " (Restricted Item)</li>";
+        continue; // Laktawan ang bawal na item
+    }
+
+    $priceWithTax = applyTax($item['price']);
+    $grand_total += $priceWithTax;
+
+    echo "<li>" . $item['name'] . " - ₱" . number_format($priceWithTax, 2) . " (VAT Inc.)</li>";
+
+    // Stop processing if total exceeds a massive amount (Security Break)
+    if ($grand_total > 100000) {
+        echo "<li><b>Warning: Credit limit reached!</b></li>";
+        break;
+    }
+}
+echo "</ul>";
+
+// 4. Discount Logic
+$discount = 0;
+if ($grand_total > 5000) {
+    $discount = 500;
+    $grand_total -= $discount;
+}
+
+echo "<h3>Final Summary</h3>";
+echo "Total Discount: -₱" . number_format($discount, 2) . "<br>";
+echo "<strong>Amount to Pay: ₱" . number_format($grand_total, 2) . "</strong>";
+
+// 5. Array Sort Example
+echo "<h4>Sorted Product Names (A-Z):</h4>";
+$product_names = array_column($shopping_cart, 'name'); // Kunin lang ang mga pangalan
+sort($product_names);
+echo implode(", ", $product_names);
+?>
